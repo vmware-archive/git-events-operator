@@ -1,2 +1,21 @@
 # git-events-operator
-Events operator for watching a git repository. Trigger on changes to the repository.
+
+This is an operator (or more of a framework) that allows users to build their own specific flavor
+of an operator and deploy to Kubernetes.
+
+The framework makes it easy to trigger on arbitrary events and map them to arbitrary actions.
+
+In the case of our first example we map a merge to master, to a rebrandly link
+
+# Building
+
+```bash
+make container push
+```
+
+More information
+
+```bash
+make help
+```
+
