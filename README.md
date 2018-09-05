@@ -29,3 +29,11 @@ Required environmental variables
 export GITHUB_USERNAME="myuser"
 export GITHUB_PASSWORD="mypass"
 ```
+
+# Actions
+
+### Rebrandly
+
+```
+export REBRANDLY_API_KEY="mykey"
+```

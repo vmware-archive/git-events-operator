@@ -23,6 +23,8 @@ import (
 
 	"strconv"
 
+	"time"
+
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/heptiolabs/git-events-operator/event/github"
 	rebrandly "github.com/kris-nova/rebrandly-go-sdk"
@@ -30,26 +32,27 @@ import (
 )
 
 const (
-	Domain = "rebrand.ly"
+	Domain                      = "rebrand.ly"
+	SleepBeforeRepublishSeconds = 120
 )
 
 // GenerateAndSendRebrandlyLink expects
-func GenerateAndSendRebrandlyLink(e event.Event) error {
+func GenerateAndSendRebrandlyLink(e event.Event, q *event.Queue) error {
 
 	// Map our support for the various kinds
 	switch e.Kind() {
 	case event.NewFile:
-		return processNewFile(e)
+		return processNewFile(e, q)
 	default:
 		return fmt.Errorf("kind %s not supprted", e.Kind())
 	}
 	return nil
 }
 
-func processNewFile(e event.Event) error {
+func processNewFile(e event.Event, q *event.Queue) error {
 	switch e.Type() {
 	case github.GithubImplementation:
-		return processGitHubNewFile(e)
+		return processGitHubNewFile(e, q)
 	default:
 		return fmt.Errorf("unknown implementation: %s", e.Type())
 	}
@@ -85,13 +88,14 @@ func processNewFile(e event.Event) error {
 //	integrated bool
 //}
 
-func processGitHubNewFile(e event.Event) error {
+func processGitHubNewFile(e event.Event, q *event.Queue) error {
 
 	// TODO @kris-nova this is the hackiest API parsing known to womankind. Please fix this, soon.
 	newFile := e.(*github.EventImplementation)
 
 	// Calculate the expected shortUrl
-	expectedShortURL := fmt.Sprintf("%s/%s", Domain, rebrandlyHash(newFile.FileName))
+	slashtag := rebrandlyHash(newFile.FileName)
+	expectedShortURL := fmt.Sprintf("%s/%s", Domain, slashtag)
 
 	// Connect with Rebrandly
 	client, err := rebrandly.NewRebrandlyClient()
@@ -118,12 +122,42 @@ func processGitHubNewFile(e event.Event) error {
 	}
 	if !found {
 		logger.Info("Creating new rebrandly link [%s] for file [%s]", expectedShortURL, newFile.FileName)
-		// TODO Create link
+
+		params := map[string]interface{}{
+			"destination": fmt.Sprintf("https://advocacy.heptio.com/event/%s", newFile.FileName),
+			"slashtag":    slashtag,
+			"title":       fmt.Sprintf("[Heptio Advocacy] Automatic link created for page [%s]", newFile.FileName),
+			//"description": "A wonderful link",
+			"domain": map[string]interface{}{
+				"ref": "",
+				"id":  "8f104cc5b6ee4a4ba7897b06ac2ddcfb",
+			},
+		}
+		res, err := client.CreateLink(params)
+		if err != nil {
+			return fmt.Errorf("unable to create new link: %v", err)
+		}
+		if res.Response.StatusCode == 200 {
+			logger.Info("Status Code [%d %s]", res.Response.StatusCode, res.Response.Status)
+		} else {
+			// Republish event and try again
+
+			logger.Info("Failure creating link, republishing event in queue")
+			logger.Info("Response code [%s]", res.Response.Status)
+			body, err := res.Body()
+			if err == nil {
+				logger.Info("Output dump: %s", body)
+			}
+			time.Sleep(time.Duration(time.Second * SleepBeforeRepublishSeconds))
+			q.AddEvent(e)
+		}
 		for authorEmail, authorName := range newFile.Authors {
 			logger.Info("Alerting user [%s] via email [%s] of new link [%s] for file [%s]", authorName, authorEmail, expectedShortURL, newFile.Name)
 			// TODO Email user
 		}
 
+	} else {
+		logger.Info("Link exists [%s] - bypassing", newFile.FileName)
 	}
 
 	return nil
