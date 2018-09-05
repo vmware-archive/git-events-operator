@@ -8,6 +8,18 @@
   version = "v1.7.0"
 
 [[projects]]
+  name = "github.com/google/go-github"
+  packages = ["github"]
+  revision = "747f93dd9b489bd56f7442b3c42bfea12800a75b"
+  version = "v17.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -58,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3b2fdd3cfc504621fd291b2c14da7a8fb93cbb5140666c4d8c724a6a8cbb75b9"
+  inputs-digest = "fb2a4552f32e9efe3632ac4cd09e34561eeb3342843c8d27decb826892d0dfd0"
   solver-name = "gps-cdcl"
   solver-version = 1

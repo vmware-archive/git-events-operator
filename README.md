@@ -19,3 +19,13 @@ More information
 make help
 ```
 
+# Brokers
+
+### GitHub
+
+Required environmental variables
+
+```
+export GITHUB_USERNAME="myuser"
+export GITHUB_PASSWORD="mypass"
+```

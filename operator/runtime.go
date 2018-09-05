@@ -15,6 +15,10 @@
 package operator
 
 import (
+	"reflect"
+
+	"runtime"
+
 	"github.com/heptiolabs/git-events-operator/actions"
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/kubicorn/kubicorn/pkg/logger"
@@ -30,15 +34,22 @@ type Config struct {
 func Reconcile(cfg *Config) error {
 
 	queue := event.NewQueue(cfg.Brokers)
+	logger.Info("Loading event queue...")
 	// Watch for errors from the queue concurrently
 	go func() {
 		errch := queue.ConcurrentStart()
+		logger.Info("Starting even brokers...")
 		for {
 			err := <-errch
 			// TODO do we want to break on error?
 			logger.Warning("Error from message queue: %v", err)
 		}
 	}()
+
+	for kind, f := range cfg.ActionMap {
+		logger.Info("Mapping [%v]   :   [%s]", kind, runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name())
+	}
+
 	for {
 		event, err := queue.PopFromQueue()
 		if err != nil {
@@ -51,6 +62,12 @@ func Reconcile(cfg *Config) error {
 		actionMap := cfg.ActionMap
 		action, ok := actionMap[kind]
 		if !ok {
+
+			if kind == "" {
+				logger.Warning("Empty Kind for event, ignoring.")
+				continue
+			}
+
 			// Kind not mapped
 			logger.Warning("Kind %d not mapped in configuration, ignoring event", kind)
 			continue

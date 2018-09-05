@@ -26,6 +26,7 @@ type Queue struct {
 
 type EventImplementations []Event
 
+// NewQueue creates a new event queue. Use this to initialise the queue.
 func NewQueue(brokers []Broker) *Queue {
 	return &Queue{
 		brokers: brokers,
@@ -33,10 +34,20 @@ func NewQueue(brokers []Broker) *Queue {
 
 }
 
+// ConcurrentStart will start the queue process and begin watching for events.
+// Use this function to start the queue, and authenticate each of the defined brokers.
 func (q *Queue) ConcurrentStart() chan error {
 	errch := make(chan error)
 	go func() {
 		for _, broker := range q.brokers {
+
+			// Auth
+			err := broker.Auth()
+			if err != nil {
+				errch <- fmt.Errorf("unable to auth with broker: %v", err)
+			}
+
+			// Watch
 			errch2 := <-broker.ConcurrentWatch(q)
 
 			// Concurrently pass each error to the broader error channel

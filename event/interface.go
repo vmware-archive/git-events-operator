@@ -31,4 +31,5 @@ type Event interface {
 
 type Broker interface {
 	ConcurrentWatch(queue *Queue) chan error
+	Auth() error
 }
