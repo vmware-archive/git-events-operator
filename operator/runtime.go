@@ -75,7 +75,7 @@ func Reconcile(cfg *Config) error {
 
 		// Here we have an action and an event, woo!
 		// Call the action
-		err = action(event)
+		err = action(event, queue)
 		if err != nil {
 			logger.Warning("Unable to complete action: %v", err)
 		}
