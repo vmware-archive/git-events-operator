@@ -25,6 +25,9 @@ import (
 
 	"time"
 
+	"os"
+
+	"github.com/SparkPost/gosparkpost"
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/heptiolabs/git-events-operator/event/github"
 	rebrandly "github.com/kris-nova/rebrandly-go-sdk"
@@ -152,6 +155,35 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 			q.AddEvent(e)
 		}
 		for authorEmail, authorName := range newFile.Authors {
+			// Get our API key from the environment; configure.
+			apiKey := os.Getenv("SPARKPOST_API_KEY")
+			if apiKey == "" {
+				return fmt.Errorf("missing api key SPARKPOST_API_KEY")
+			}
+			cfg := &gosparkpost.Config{
+				BaseUrl:    "https://api.sparkpost.com",
+				ApiKey:     apiKey,
+				ApiVersion: 1,
+			}
+			var client gosparkpost.Client
+			err := client.Init(cfg)
+			if err != nil {
+				return fmt.Errorf("unable to create email client: %v", err)
+			}
+			// Create a Transmission using an inline Recipient List
+			// and inline email Content.
+			tx := &gosparkpost.Transmission{
+				Recipients: []string{authorEmail},
+				Content: gosparkpost.Content{
+					HTML:    GetHTMLEmail(authorName, newFile.FileName, expectedShortURL),
+					From:    "sandbox@sparkpostbox.com",
+					Subject: fmt.Sprintf("Your event [%s]", newFile.FileName),
+				},
+			}
+			_, _, err = client.Send(tx)
+			if err != nil {
+				return fmt.Errorf("unable to send email: %v", err)
+			}
 			logger.Info("Alerting user [%s] via email [%s] of new link [%s] for file [%s]", authorName, authorEmail, expectedShortURL, newFile.Name)
 			// TODO Email user
 		}
