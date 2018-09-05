@@ -45,13 +45,17 @@ var operatorConfig = &operator.Config{
 
 	// Define which event brokers we want to use
 	Brokers: []event.Broker{
-		&github.EventBrokerImplementation{},
+		&github.EventBrokerImplementation{
+			Owner: "heptio",
+			Repo:  "advocacy",
+			Path:  "content/event/",
+		},
 	},
 
 	// Map specific event types to specific actions
 	ActionMap: map[event.EventKind]action.ActionFunc{
 
-		// Here we map MergeToMaster to GenerateAndSendRebrandly link
-		event.MergeToMaster: action.GenerateAndSendRebrandlyLink,
+		// Here we map NewFile to GenerateAndSendRebrandly link
+		event.NewFile: action.GenerateAndSendRebrandlyLink,
 	},
 }

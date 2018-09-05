@@ -38,7 +38,7 @@ func Reconcile(cfg *Config) error {
 	// Watch for errors from the queue concurrently
 	go func() {
 		errch := queue.ConcurrentStart()
-		logger.Info("Starting even brokers...")
+		logger.Info("Starting event brokers...")
 		for {
 			err := <-errch
 			// TODO do we want to break on error?
