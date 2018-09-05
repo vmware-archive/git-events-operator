@@ -19,6 +19,7 @@ import (
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/heptiolabs/git-events-operator/event/github"
 	"github.com/heptiolabs/git-events-operator/operator"
+	"github.com/kubicorn/kubicorn/pkg/logger"
 )
 
 // config.go
@@ -29,6 +30,16 @@ import (
 //
 // We can pull these into configuration later, but for now this gives
 // us a way to get started with relatively little overhead.
+
+func init() {
+
+	// Logger level
+	// 4 Most verbose
+	// 3 Preferred
+	// 2 and 1 no recommended
+	logger.Level = 3
+
+}
 
 var operatorConfig = &operator.Config{
 

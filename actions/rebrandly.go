@@ -45,8 +45,9 @@ func processMergeToMaster(e event.Event) error {
 	return nil
 }
 
+// processGitHubMergeToMaster will process a merge that is specific to GitHub
 func processGitHubMergeToMaster(e event.Event) error {
 	merge := e.(*github.EventImplementation)
-	fmt.Printf("Processing merge from %s\n", merge.CommiterEmail)
+	fmt.Printf("Processing merge from %s\n", merge.Name)
 	return nil
 }
