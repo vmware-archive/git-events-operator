@@ -19,9 +19,8 @@ type ImplementationType string
 
 const (
 
-	// MergeToMaster is whenever a pull request is merged to the
-	// master branch
-	MergeToMaster EventKind = "Merge To Master"
+	// NewFile is whenever a new file is created in a given directory
+	NewFile EventKind = "NewFile"
 )
 
 type Event interface {
