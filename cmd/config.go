@@ -15,6 +15,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/heptiolabs/git-events-operator/actions"
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/heptiolabs/git-events-operator/event/github"
@@ -39,6 +41,21 @@ func init() {
 	// 2 and 1 no recommended
 	logger.Level = 3
 
+	// Ensure the following are defined right away
+
+	ensureEnvVarIsSet("SPARKPOST_API_KEY")
+	ensureEnvVarIsSet("REBRANDLY_API_KEY")
+	ensureEnvVarIsSet("GITHUB_PASS")
+	ensureEnvVarIsSet("GITHUB_USER")
+
+}
+
+func ensureEnvVarIsSet(key string) {
+	v := os.Getenv(key)
+	if v == "" {
+		logger.Warning("Missing required environmental variable [%s]", key)
+		os.Exit(99)
+	}
 }
 
 var operatorConfig = &operator.Config{
