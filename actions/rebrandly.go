@@ -25,6 +25,9 @@ import (
 
 	"time"
 
+	"os"
+
+	sp "github.com/SparkPost/gosparkpost"
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/heptiolabs/git-events-operator/event/github"
 	rebrandly "github.com/kris-nova/rebrandly-go-sdk"
@@ -97,7 +100,11 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 	slashtag := rebrandlyHash(newFile.FileName)
 	expectedShortURL := fmt.Sprintf("%s/%s", Domain, slashtag)
 
-	// Connect with Rebrandly
+	// -----------------------------------------------------------------------------------------------------------------
+	//
+	// ENSURE REBRANDLY LINK HERE
+	//
+	// -----------------------------------------------------------------------------------------------------------------
 	client, err := rebrandly.NewRebrandlyClient()
 	if err != nil {
 		return fmt.Errorf("unable to auth with Rebrandly: %v", err)
@@ -150,10 +157,40 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 			}
 			time.Sleep(time.Duration(time.Second * SleepBeforeRepublishSeconds))
 			q.AddEvent(e)
+			return nil
 		}
 		for authorEmail, authorName := range newFile.Authors {
+			// ---------------------------------------------------------------------------------------------------------
+			//
+			// SEND EMAIL HERE
+			//
+			// ---------------------------------------------------------------------------------------------------------
 			logger.Info("Alerting user [%s] via email [%s] of new link [%s] for file [%s]", authorName, authorEmail, expectedShortURL, newFile.Name)
-			// TODO Email user
+			apiKey := os.Getenv("SPARKPOST_API_KEY")
+			cfg := &sp.Config{
+				BaseUrl:    "https://api.sparkpost.com",
+				ApiKey:     apiKey,
+				ApiVersion: 1,
+			}
+			var client sp.Client
+			err := client.Init(cfg)
+			if err != nil {
+				return fmt.Errorf("unable to create sparkpost client: %v", err)
+			}
+
+			tx := &sp.Transmission{
+				Recipients: []string{authorEmail},
+				Content: sp.Content{
+					HTML:    getHTMLEmail(authorName, newFile.FileName, expectedShortURL),
+					From:    "charlie@mailing.tgik8s.com",
+					Subject: fmt.Sprintf("[Heptio Advocacy] Your new event [%s]", newFile.FileName),
+				},
+			}
+			_, _, err = client.Send(tx)
+			if err != nil {
+				return fmt.Errorf("unable to send email: %v", err)
+			}
+
 		}
 
 	} else {
