@@ -21,7 +21,7 @@ Please use this link on social media, and during your presentation to share meta
 </p>
 
 <br><br>
-<i><a href="%s">%s</a>"</i>
+<i><a href="%s">%s</a></i>
 <br><br>
 
 <h2>Common links that folks add to their event page include:</h2>
@@ -44,6 +44,7 @@ Please use this link on social media, and during your presentation to share meta
 <i>
 For more information please reach out to Heptio advocacy at <a href="mailto:team-advocacy@heptio.com">team-advocacy@heptio.com</a>
 </i>
+<br>
 <img src="https://avatars2.githubusercontent.com/u/22035492?s=200&v=4">
 </p>
 </html>`, name, filename, link, link)

@@ -37,6 +37,8 @@ import (
 const (
 	Domain                      = "rebrand.ly"
 	SleepBeforeRepublishSeconds = 120
+	HeptioAdvocacyEmail         = "advocacy@mailing.tgik8s.com"
+	HeptioAdvocacyName          = "Heptio Advocacy"
 )
 
 // GenerateAndSendRebrandlyLink expects
@@ -181,8 +183,11 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 			tx := &sp.Transmission{
 				Recipients: []string{authorEmail},
 				Content: sp.Content{
-					HTML:    getHTMLEmail(authorName, newFile.FileName, expectedShortURL),
-					From:    "charlie@mailing.tgik8s.com",
+					HTML: getHTMLEmail(authorName, newFile.FileName, expectedShortURL),
+					From: map[string]string{
+						"name":  HeptioAdvocacyName,
+						"email": HeptioAdvocacyEmail,
+					},
 					Subject: fmt.Sprintf("[Heptio Advocacy] Your new event [%s]", newFile.FileName),
 				},
 			}
