@@ -1,18 +1,17 @@
 package rebrandly_go_sdk
 
 import (
-	"os"
 	"fmt"
+	"os"
 )
 
 const (
-	REBRANDLY_API_KEY_VARIABLE_NAME="REBRANDLY_API_KEY"
+	REBRANDLY_API_KEY_VARIABLE_NAME = "REBRANDLY_API_KEY"
 )
 
 type rebrandlyClient struct {
 	apiKey string
 }
-
 
 // NewRebrandlyClient authenticates a new Rebrandly client. This
 // function expects the environmental variable `REBRANDLY_API_KEY`
@@ -30,8 +29,3 @@ func NewRebrandlyClient() (*rebrandlyClient, error) {
 		apiKey: apiKey,
 	}, nil
 }
-
-
-
-
-
