@@ -94,8 +94,7 @@ func (b *EventBrokerImplementation) ConcurrentWatch(queue *event.Queue) chan err
 			for _, repoContent := range dirContent {
 				cached := false
 				name := *repoContent.Name
-				//fmt.Printf("(%s)
-", name)
+				//fmt.Printf("(%s) ", name)
 				for _, cachedFile := range cache {
 					if name == cachedFile {
 						cached = true
@@ -134,8 +133,7 @@ func (b *EventBrokerImplementation) ConcurrentWatch(queue *event.Queue) chan err
 					name := author.GetName()
 					email := author.GetEmail()
 
-					//fmt.Printf("%+v
-", commit)
+					//fmt.Printf("%+v ", commit)
 					//fmt.Println(name, email)
 
 					// Index on email so we know we don't spam anyones inbox
