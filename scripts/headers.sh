@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright © 2017 Kris Nova knova@heptio.com
+# Copyright © 2017 Heptio
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 # limitations under the License.
 
 read -r -d '' EXPECTED <<EOF
-// Copyright © 2017 The Kubicorn Authors
+// Copyright © 2017 Heptio
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
