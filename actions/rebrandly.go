@@ -41,6 +41,8 @@ import (
 
 	"os"
 
+	"strings"
+
 	sp "github.com/SparkPost/gosparkpost"
 	"github.com/heptiolabs/git-events-operator/event"
 	"github.com/heptiolabs/git-events-operator/event/github"
@@ -114,7 +116,7 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 
 	// Calculate the expected shortUrl
 	slashtag := rebrandlyHash(newFile.FileName)
-	expectedShortURL := fmt.Sprintf("%s/%s", Domain, slashtag)
+	expectedShortURL := strings.Replace(".md", "", fmt.Sprintf("%s/%s", Domain, slashtag), 1)
 
 	// -----------------------------------------------------------------------------------------------------------------
 	//
