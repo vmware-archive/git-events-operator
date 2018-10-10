@@ -115,8 +115,8 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 	newFile := e.(*github.EventImplementation)
 
 	// Calculate the expected shortUrl
-	slashtag := rebrandlyHash(newFile.FileName)
-	expectedShortURL := strings.Replace(fmt.Sprintf("%s/%s", Domain, slashtag), ".md", "", 1)
+	slashtag := strings.Replace(rebrandlyHash(newFile.FileName), ".md", "", 1)
+	expectedShortURL := fmt.Sprintf("%s/%s", Domain, slashtag)
 
 	// -----------------------------------------------------------------------------------------------------------------
 	//
