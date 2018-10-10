@@ -149,7 +149,7 @@ func processGitHubNewFile(e event.Event, q *event.Queue) error {
 		logger.Info("Creating new rebrandly link [%s] for file [%s]", expectedShortURL, newFile.FileName)
 
 		params := map[string]interface{}{
-			"destination": fmt.Sprintf("https://advocacy.heptio.com/event/%s", newFile.FileName),
+			"destination": strings.Replace(fmt.Sprintf("https://advocacy.heptio.com/event/%s", newFile.FileName), ".md", "", 1),
 			"slashtag":    slashtag,
 			"title":       fmt.Sprintf("[Heptio Advocacy] Automatic link created for page [%s]", newFile.FileName),
 			//"description": "A wonderful link",
