@@ -26,6 +26,20 @@ make help
 Required environmental variables
 
 ```
-export GITHUB_USERNAME="myuser"
-export GITHUB_PASSWORD="mypass"
+export GITHUB_USER="myuser"
+export GITHUB_PASS="mypass"
+```
+
+# Actions
+
+### Rebrandly
+
+```
+export REBRANDLY_API_KEY="mykey"
+```
+
+### Sparkpost
+
+```
+export SPARKPOST_API_KEY="mykey"
 ```

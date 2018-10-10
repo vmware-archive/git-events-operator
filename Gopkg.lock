@@ -2,6 +2,15 @@
 
 
 [[projects]]
+  name = "github.com/SparkPost/gosparkpost"
+  packages = [
+    ".",
+    "events"
+  ]
+  revision = "4c6d2a3be65810be883c869868a74e677df2881b"
+  version = "0.1.0"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
@@ -33,6 +42,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/kris-nova/rebrandly-go-sdk"
+  packages = ["."]
+  revision = "2dd68f242790b59cec08cfb7d4cfd81406c6b74a"
+
+[[projects]]
+  branch = "master"
   name = "github.com/kubicorn/kubicorn"
   packages = ["pkg/logger"]
   revision = "2d658597ca19b7a64bba2f281e434559e3128aba"
@@ -48,6 +63,12 @@
   packages = ["."]
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/spf13/cobra"
@@ -70,6 +91,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fb2a4552f32e9efe3632ac4cd09e34561eeb3342843c8d27decb826892d0dfd0"
+  inputs-digest = "86b89d0feda016277e958c07992ba780ab5cc9ad2ae07ecc029c7bf06fec0890"
   solver-name = "gps-cdcl"
   solver-version = 1

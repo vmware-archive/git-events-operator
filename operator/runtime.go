@@ -1,3 +1,17 @@
+// Copyright © 2017 Heptio
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // Copyright © 2017 The Kubicorn Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +52,7 @@ func Reconcile(cfg *Config) error {
 	// Watch for errors from the queue concurrently
 	go func() {
 		errch := queue.ConcurrentStart()
-		logger.Info("Starting even brokers...")
+		logger.Info("Starting event brokers...")
 		for {
 			err := <-errch
 			// TODO do we want to break on error?
@@ -75,7 +89,7 @@ func Reconcile(cfg *Config) error {
 
 		// Here we have an action and an event, woo!
 		// Call the action
-		err = action(event)
+		err = action(event, queue)
 		if err != nil {
 			logger.Warning("Unable to complete action: %v", err)
 		}
