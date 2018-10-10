@@ -1,3 +1,9 @@
+FROM jguyomard/hugo-builder
+ADD . /go/src/github.com/heptio/advocacy
+WORKDIR /go/src/github.com/heptio/advocacy
+CMD ["hugo"]
+
+
 FROM golang:latest
 MAINTAINER Kris Nova "knova@heptio.com"
 RUN mkdir -p /go/src/github.com/heptiolabs/git-events-operator
